@@ -1459,7 +1459,7 @@ void FX_MakeMannaIcon(int x, int y, int xsize, int ysize)
 
 	if (objectAccess[20].object != NULL)
 	{
-		texture = FX_GetTextureObject((struct Object*)objectAccess[20].object, 0, 7);
+		texture = FX_GetTextureObject((struct Object*)objectAccess[20].object, 0, 8);
 
 		poly = FX_SetupPolyGT4(x, y, x + xsize, y + ysize, 3, texture, 0x2962828, 0x2962828, 0x2962828, 0x2962828);
 	
@@ -1558,7 +1558,7 @@ void FX_MakeGlyphIcon(struct _Position* position, struct Object* glyphObject, in
 
 	if (glyphObject != NULL)
 	{
-		if (glyphnum == 7)
+		if (glyphnum == 8)
 		{
 			object = (struct Object*)objectAccess[10].object;
 
@@ -1577,6 +1577,9 @@ void FX_MakeGlyphIcon(struct _Position* position, struct Object* glyphObject, in
 
 				otz = (24 - size) < 0 ? (((24 - size) + 3) >> 2) + 1 : ((24 - size) >> 2) + 1;
 
+				// Shouldn't be using color_array[8] for the dots.
+				// color_array[7] is for the spirit glyph now, like it was in the April build,
+				// and there is no color_array[8], so just use white.
 				color_array = glyphtunedata->color_array;
 
 				if (enabled != 0)

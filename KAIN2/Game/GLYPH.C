@@ -56,8 +56,8 @@ void GlyphInit(struct _Instance* instance, struct GameTracker* gameTracker)  // 
 		EnMessageQueueData(&data->messages, 0x100001, 0);
 
 		data->process = &_GlyphOffProcess;
-		data->selectedGlyph = 7;
-		data->target_glyph_rotation = 3510;
+		data->selectedGlyph = 8;
+		data->target_glyph_rotation = 3584;
 		data->glyph_time = 0;
 
 		glyph_time = 0;
@@ -72,7 +72,7 @@ void GlyphInit(struct _Instance* instance, struct GameTracker* gameTracker)  // 
 		fx_blastring = NULL;
 		fx_going = 0;
 
-		data->glyph_rotation = (data->selectedGlyph - 1) * 585;
+		data->glyph_rotation = (data->selectedGlyph - 1) * 512;
 
 		glyph_cost = -1;
 
@@ -156,6 +156,18 @@ int GlyphIsGlyphOpen(struct _Instance* instance)  // Matching - 100%
 
 int _GlyphIsGlyphSet(int glyph)  // Matching - 100%
 {
+	// Spirit glyph hack, Proper way is to fix RAZIEL_Query case 36.
+	if (glyph == 7)
+	{
+		return 1;
+	}
+
+	// Spirit glyph hack, Proper way is to fix RAZIEL_Query case 36.
+	if (glyph == 8)
+	{
+		glyph = 7;
+	}
+
 	unsigned long abilities;
 
 	abilities = INSTANCE_Query(gameTrackerX.playerInstance, 0x24) | debugRazielFlags3;
@@ -165,6 +177,18 @@ int _GlyphIsGlyphSet(int glyph)  // Matching - 100%
 
 int _GlyphIsGlyphUsable(int glyph)  // Matching - 100%
 {
+	// Spirit glyph hack, Proper way is to fix RAZIEL_Query case 19.
+	if (glyph == 7)
+	{
+		return Raziel.CurrentPlane == 1;
+	}
+
+	// Spirit glyph hack, Proper way is to fix RAZIEL_Query case 19.
+	if (glyph == 8)
+	{
+		glyph = 7;
+	}
+
 	return (1 << (glyph + 17)) & INSTANCE_Query(gameTrackerX.playerInstance, 0x13);
 }
 
@@ -282,7 +306,7 @@ void GlyphDrawMenu(struct _Instance* instance)  // Matching - 100%
 
 	rot = (data->glyph_rotation + 3072);
 
-	for (n = 0; n < 7; rot -= 585, n++)
+	for (n = 0; n < 8; rot -= 512, n++)
 	{
 		int enabled;
 		int scale_modify;
@@ -336,9 +360,9 @@ void GlyphDrawMenu(struct _Instance* instance)  // Matching - 100%
 		}
 		else
 		{
-			if ((n + 1) != 7)
+			if ((n + 1) != 8)
 			{
-				num = 7;
+				num = 8;
 				enabled = 1;
 			}
 			else
@@ -552,11 +576,11 @@ void _GlyphSelectProcess(struct _Instance* instance, int data1, int data2)
 			//loc_8007B7A4
 			dontdraw_flag = 1;
 
-			data->selectedGlyph = 7;
+			data->selectedGlyph = 8;
 
-			data->target_glyph_rotation = 0xDB6;
+			data->target_glyph_rotation = 3584;
 
-			data->glyph_rotation = data->selectedGlyph * 585;
+			data->glyph_rotation = data->selectedGlyph * 512;
 
 			data->glyph_rotation = data->target_glyph_rotation;
 			break;
@@ -589,7 +613,7 @@ void _GlyphSelectProcess(struct _Instance* instance, int data1, int data2)
 
 						//loc_8007B8A4
 
-						data->target_glyph_rotation = (data->selectedGlyph - 1) * 585;
+						data->target_glyph_rotation = (data->selectedGlyph - 1) * 512;
 
 					} while (_GlyphIsGlyphSet(data->selectedGlyph) == 0);
 
@@ -619,12 +643,12 @@ void _GlyphSelectProcess(struct _Instance* instance, int data1, int data2)
 
 						if (data->selectedGlyph <= 0)
 						{
-							data->selectedGlyph = 7;
+							data->selectedGlyph = 8;
 						}
 
 						//loc_8007B8A4
 
-						data->target_glyph_rotation = (data->selectedGlyph - 1) * 585;
+						data->target_glyph_rotation = (data->selectedGlyph - 1) * 512;
 
 					} while (_GlyphIsGlyphSet(data->selectedGlyph) == 0);
 
@@ -734,6 +758,8 @@ void Glyph_StartSpell(struct _Instance* instance, int glyphnum)  // Matching - 1
 		message = 0x80003;
 		break;
 	case 7:
+		return;
+	case 8:
 		message = 0x80007;
 		break;
 	}
@@ -903,6 +929,8 @@ void Glyph_DoSpell(struct _Instance* instance, int glyphnum) // Matching - 100%
 		pred_offset = 5;
 		break;
 	case 7:
+		break;
+	case 8:
 		break;
 	}
 
