@@ -4637,7 +4637,7 @@ void RazielPost(struct _Instance* instance, unsigned long Message, unsigned long
 	}
 }
 
-int SetStates(struct _Instance* instance, struct GameTracker* GT, long* controlCommand, int AnalogLength)//Matching - 92.36%
+int SetStates(struct _Instance* instance, struct GameTracker* GT, long* controlCommand, int AnalogLength) // Matching - 100%
 {
 	int i;
 	int Event;
@@ -4661,17 +4661,12 @@ int SetStates(struct _Instance* instance, struct GameTracker* GT, long* controlC
 
 	LoopCounter++;
 
-	for(i = 0; i < 3;)
+	for(i = 0; i < 3; i++)
 	{
-		Ptr = DeMessageQueue(&Raziel.State.SectionList[i].Defer);
-
-		if (Ptr != NULL)
-		{
-			EnMessageQueue(&Raziel.State.SectionList[i].Event, Ptr);
-			continue;
-		}
-
-		i++;
+        while (Ptr = DeMessageQueue(&Raziel.State.SectionList[i].Defer), Ptr != 0)
+        {
+    		EnMessageQueue(&Raziel.State.SectionList[i].Event, Ptr);
+        }
 	}
 
 	if (instance->offset.x != 0 || instance->offset.y != 0 || instance->offset.z != 0)
@@ -4746,7 +4741,7 @@ int SetStates(struct _Instance* instance, struct GameTracker* GT, long* controlC
 			{
 				if ((Data1 & 0x1000))
 				{
-					Event = 0x1000000;
+					Event = 0x1000001;
 				}
 				else
 				{
@@ -4901,7 +4896,6 @@ int SetStates(struct _Instance* instance, struct GameTracker* GT, long* controlC
 
 	return 1;
 }
-
 
 void ProcessConstrict()  // Matching - 100%
 {
